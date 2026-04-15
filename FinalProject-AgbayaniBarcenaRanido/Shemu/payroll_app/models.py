@@ -4,8 +4,8 @@ class Employee(models.Model):
     name = models.CharField(max_length=100)
     id_number = models.CharField(max_length=50, unique=True)
     rate = models.FloatField()
-    overtime_pay = models.FloatField(null=True, blank=True)
-    allowance = models.FloatField(null=True, blank=True)
+    overtime_pay = models.FloatField(null=True, blank=True, default=0)
+    allowance = models.FloatField(null=True, blank=True, default=0)
 
     def getName(self):
         return self.name
@@ -27,10 +27,10 @@ class Employee(models.Model):
         return self.allowance
 
     def __str__(self):
-        return f"{self.pk}: {self.id_number}, rate: {self.rate}"
+        return f"pk: {self.id_number}, rate: {self.rate}"
 
 class Payslip(models.Model):
-    employee_id_number = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee_id_number = models.ForeignKey(Employee, to_field='employee_id_number', on_delete=models.CASCADE)
     month = models.CharField(max_length=20)
     date_range = models.CharField(max_length=50)
     year = models.CharField(max_length=10)
@@ -88,4 +88,6 @@ class Payslip(models.Model):
         return self.total_pay
 
     def __str__(self):
-        return f"{self.pk}: Employee {self.employee.id_number}, Period: {self.month} {self.date_range}, {self.year}, Cycle: {self.pay_cycle}, Total Pay: {self.total_pay}"
+        return (f"pk: {self.pk}, Employee: {self.id_number.id_number}, "
+                f"Period: {self.month} {self.date_range}, {self.year}, "
+                f"Cycle: {self.pay_cycle}, Total Pay: {self.total_pay}")
