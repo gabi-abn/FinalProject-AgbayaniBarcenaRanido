@@ -1,0 +1,63 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %} – Employees{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+  <h1>Employees</h1>
+  <a href="{% url 'create_employee' %}" class="btn-shemu-primary">+ New Employee</a>
+</div>
+
+<div class="shemu-table-wrap">
+  <table class="shemu-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID Number</th>
+        <th>Rate</th>
+        <th>Allowance</th>
+        <th>Overtime</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in employees %}
+      <tr>
+        <td>{{ emp.getName }}</td>
+        <td>{{ emp.getID }}</td>
+        <td>{{ emp.getRate }}</td>
+        <td>{{ emp.getAllowance }}</td>
+        <td>{{ emp.getOvertime }}</td>
+        <td>
+          
+          <div style="display:flex; gap:.4rem; flex-wrap:wrap;">
+            <a href="{% url 'update_employee' emp.pk %}" class="btn-shemu-primary">Update</a>
+            <a href="{% url 'delete_employee' emp.pk %}" class="btn-shemu-danger">Delete</a>
+          </div>
+
+          <form method="post" action="{% url 'add_overtime' emp.pk %}" class="overtime-row">
+            {% csrf_token %}
+            <input
+              type="number"
+              name="overtime_hours"
+              placeholder="Overtime Hours"
+              min="0"
+              step="0.01"
+              required
+            />
+            <button type="submit" class="btn-shemu-success">Add Overtime</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center; color:#94a3b8; padding:2rem;">
+          No employees found. <a href="{% url 'create_employee' %}">Add one now.</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
