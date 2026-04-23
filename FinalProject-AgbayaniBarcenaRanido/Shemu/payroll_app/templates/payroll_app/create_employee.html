@@ -11,24 +11,24 @@
 
     <div class="form-group">
       <label for="id_name">Name</label>
-      <input type="text" id="id_name" name="name" maxlength="100" pattern="[A-Za-z\s]+" required>
+      <input type="text" id="id_name" name="name" maxlength="100" pattern="[A-Za-z\s]+" value="{{employee.name}}" required>
     </div>
 
     <div class="form-group">
       <label for="id_id_number">ID Number</label>
-      <input type="text" id="id_id_number" name="id_number" maxlength="50" pattern="[0-9]+" required>
+      <input type="text" id="id_id_number" name="id_number" maxlength="50" pattern="[0-9]+" value="{{employee.id_number}}" required>
     </div>
 
     <div class="form-group">
       <label for="id_rate">Rate</label>
-      <input type="number" id="id_rate" name="rate" min="0.01" step="0.01" required>
+      <input type="number" id="id_rate" name="rate" min="0.01" step="0.01" value="{{employee.rate}}" required>
     </div>
 
     <div class="form-group">
       <label for="id_allowance">
         Allowance <span style="color:#94a3b8; font-weight:400;">(Optional)</span>
       </label>
-      <input type="number" id="id_allowance" name="allowance" min="0.01" step="0.01">
+      <input type="number" id="id_allowance" name="allowance" min="0.01" step="0.01" value="{{employee.allowance}}">
     </div>
 
     <div style="margin-top:1.5rem; display:flex; gap:.75rem;">
