@@ -1,0 +1,102 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %} – View Payslip{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+
+  <!-- general payslip details section -->
+  <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
+    <div>
+      <p><strong>NAME:</strong> {{ payslip.employee.name }}</p>
+      <p><strong>ID NUMBER:</strong> {{ payslip.employee.id_number }}</p>
+    </div>
+    <div style="text-align:right;">
+      <p><strong>DATE:</strong> {{ payslip.date_range }}</p>
+      <p><strong>PAYSLIP ID:</strong> {{ payslip.id }}</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- earnings section -->
+  <div style="margin-top:1.25rem;">
+    <p style="text-transform:uppercase; font-weight:600; margin-bottom:.5rem;">Earnings:</p>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th></th>
+          <th style="text-align:right; font-weight:600;">AMOUNT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Base Pay</td>
+          <td style="text-align:right;">{{ payslip.base_pay }}</td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Allowances</td>
+          <td style="text-align:right;">{{ payslip.allowances }}</td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Overtime</td>
+          <td style="text-align:right;">{{ payslip.overtime }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; justify-content:space-between; margin-top:.75rem; font-weight:600; border-top:1px solid #e2e8f0; padding-top:.5rem;">
+      <span>GROSS PAY</span>
+      <span>PHP {{ payslip.gross_pay }}</span>
+    </div>
+  </div>
+
+  <hr style="margin-top:1.25rem;">
+
+  <!-- deductions section -->
+  <div style="margin-top:1.25rem;">
+    <p style="text-transform:uppercase; font-weight:600; margin-bottom:.5rem;">Deductions:</p>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <tbody>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">W/HOLDING TAX</td>
+          <td style="text-align:right;">{{ payslip.tax }}</td>
+        </tr>
+
+        {% if payslip.cycle == 1 %}
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">PAG-IBIG</td>
+          <td style="text-align:right;">{{ payslip.pagibig }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">PHILHEALTH</td>
+          <td style="text-align:right;">{{ payslip.philhealth }}</td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">SSS</td>
+          <td style="text-align:right;">{{ payslip.sss }}</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <div style="display:flex; justify-content:space-between; margin-top:.75rem; font-weight:600; border-top:1px solid #e2e8f0; padding-top:.5rem;">
+      <span>TOTAL DEDUCTIONS</span>
+      <span>PHP {{ payslip.total_deductions }}</span>
+    </div>
+  </div>
+
+  <hr style="margin-top:1.25rem;">
+
+  <!-- net pay section -->
+  <div style="display:flex; justify-content:space-between; margin-top:1.25rem; font-size:1.1rem; font-weight:700;">
+    <span>NET PAY:</span>
+    <span>PHP {{ payslip.total_pay }}</span>
+  </div>
+
+</div>
+
+{% endblock %}
