@@ -4,6 +4,7 @@ from django.db import IntegrityError
 
 from .models import Employee, Payslip
 from .forms  import EmployeeForm
+import calendar
 
 
 def employees(request):
@@ -83,3 +84,70 @@ def payslips(request):
         'employees' : all_employees,
     }
     return render(request, 'payroll_app/payslips.html', context)
+
+
+def create_payroll(request):
+    employees = Employee.objects.all()
+    payslipes = Payslip.objects.all().order_by('-id')
+
+    if request.method == 'POST':
+        payroll_for = request.POST.get('payroll_for')
+        month = int(request.POST.get('month'))
+        year = int(request.POST.get('year'))
+        cycle = int(request.POST.get('cycle'))
+
+        # determine which employees to process
+        if payroll_for == 'all':
+            targets = employees
+        else:
+            targets = Employee.objects.filter(id=payroll_for)
+
+        # date range label
+        month_name = calendar.month_name[month]
+        if cycle == 1:
+            date_range = f"{month_name} 1-15, {year}"
+        else:
+            last_day = calendar.monthrange(year, month)[1]
+            date_range = f"{month_name} 16-{last_day}, {year}"
+
+        for e in targets:
+            # check if payslip already exists
+            if Payslip.objects.filter(employee=e, month=month, year=year, cycle=cycle).exists():
+                messages.error(request, f"Payslip for {emp.id_number} (Cycle {cycle}) already exists.")
+                continue
+
+            overtime = e.overtime
+            base = e.rate / 2
+            allowance = e.allowance or 0
+
+            if cycle == 1:
+                # pag-ibig flat fee = 100
+                pagibig = 100
+                tax = (base + allowance + overtime - pagibig) * 0.2
+                total_pay = (base + allowance + overtime - pagibig) - tax
+            else:
+                # philhealth = 4% of rate; SSS = 4.5% of rate
+                philhealth = e.rate * 0.04
+                sss = e.rate * 0.045
+                tax = (base + allowance + overtime - philhealth - sss) * 0.2
+                total_pay = (base + allowance + overtime - philhealth - sss) - tax
+
+        Payslip.objects.create(
+            employee=e,
+            month=month,
+            year=year,
+            cycle=cycle,
+            date_range=date_range,
+            total_pay=round(total_pay, 2),
+        )
+
+        # reset overtime to 0
+        e.overtime = 0
+        e.save()
+
+        return redirect('create_payroll')
+
+    return render(request, 'payroll_app/create_payroll.html', {
+        'employees': employees,
+        'payslips': payslips,
+    })
