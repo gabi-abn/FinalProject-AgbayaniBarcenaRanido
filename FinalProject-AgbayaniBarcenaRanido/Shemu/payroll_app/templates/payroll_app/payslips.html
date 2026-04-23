@@ -1,0 +1,91 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %} – Payroll Creation{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+  <h2>Payroll Creation</h2>
+
+  <form method="post" action="{% url 'create_payroll' %}">
+    {% csrf_token %}
+
+    <div class="form-group" style="display:flex; align-items:center; gap:1rem;">
+      <label for="id_payroll_for" style="white-space:nowrap;">Payroll for:</label>
+      <select id="id_payroll_for" name="payroll_for">
+        <option value="all">All Employees</option>
+        {% for employee in employees %}
+          <option value="{{ employee.id }}">{{ employee.id_number }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group" style="display:flex; align-items:center; gap:1rem;">
+      <label for="id_month">Month:</label>
+      <select id="id_month" name="month">
+        <option value="">Choose...</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+
+      <label for="id_year">Year</label>
+      <input type="text" id="id_year" name="year" maxlength="4" pattern="[0-9]{4}" placeholder="e.g. 2023">
+
+      <label for="id_cycle">Cycle</label>
+      <select id="id_cycle" name="cycle">
+        <option value="">Choose...</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <button type="submit" class="btn-shemu-primary">Submit</button>
+    </div>
+
+  </form>
+</div>
+
+<div style="margin-top:2rem;">
+  <h2>Payslips Summary</h2>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>ID Number</th>
+        <th>Date</th>
+        <th>Cycle</th>
+        <th>Total Pay</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payslip in payslips %}
+      <tr>
+        <td>{{ payslip.employee.id_number }}</td>
+        <td>{{ payslip.date_range }}</td>
+        <td>{{ payslip.cycle }}</td>
+        <td>{{ payslip.total_pay }}</td>
+        <td>
+          <a href="{% url 'view_payslip' payslip.id %}" class="btn-shemu-primary" style="padding:.3rem .85rem; font-size:.85rem;">View</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" style="text-align:center; color:#94a3b8;">No payslips yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
