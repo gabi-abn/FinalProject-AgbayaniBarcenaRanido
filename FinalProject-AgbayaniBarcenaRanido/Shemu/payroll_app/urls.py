@@ -8,4 +8,6 @@ urlpatterns = [
     path('employee/delete/<int:pk>/',  views.delete_employee, name='delete_employee'),
     path('employee/overtime/<int:pk>/',views.add_overtime,    name='add_overtime'),
     path('payslips/',                  views.payslips,        name='payslips'),
+    path('payroll/create/',            views.create_payroll,  name='create_payroll'),
+    path('payslip/<int:pk>/',          views.view_payslip,    name='view_payslip'),
 ]

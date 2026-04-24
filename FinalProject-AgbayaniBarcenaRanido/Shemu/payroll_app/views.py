@@ -85,10 +85,24 @@ def payslips(request):
     }
     return render(request, 'payroll_app/payslips.html', context)
 
+def update_employee(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    
+    if request.method == 'POST':
+        employee.name = request.POST.get('name')
+        employee.id_number = request.POST.get('id_number')
+        employee.position = request.POST.get('position')
+        employee.rate = request.POST.get('rate')
+        employee.allowance = request.POST.get('allowance') or 0
+        employee.save()
+        messages.success(request, f'Employee "{employee.name}" updated successfully.')
+        return redirect('employees')
+    
+    return render(request, 'payroll_app/update_employee.html', {'employee': employee})
 
 def create_payroll(request):
     employees = Employee.objects.all()
-    payslipes = Payslip.objects.all().order_by('-id')
+    payslips = Payslip.objects.all().order_by('-id')
 
     if request.method == 'POST':
         payroll_for = request.POST.get('payroll_for')
@@ -111,43 +125,48 @@ def create_payroll(request):
             date_range = f"{month_name} 16-{last_day}, {year}"
 
         for e in targets:
-            # check if payslip already exists
-            if Payslip.objects.filter(employee=e, month=month, year=year, cycle=cycle).exists():
-                messages.error(request, f"Payslip for {emp.id_number} (Cycle {cycle}) already exists.")
+            if Payslip.objects.filter(employee_id_number=e, month=month, year=year, pay_cycle=cycle).exists():
+                messages.error(request, f"Payslip for {e.id_number} (Cycle {cycle}) already exists.")
                 continue
 
-            overtime = e.overtime
+            overtime = e.overtime_pay or 0
             base = e.rate / 2
             allowance = e.allowance or 0
 
             if cycle == 1:
-                # pag-ibig flat fee = 100
                 pagibig = 100
+                sss = 0
+                health = 0
                 tax = (base + allowance + overtime - pagibig) * 0.2
                 total_pay = (base + allowance + overtime - pagibig) - tax
             else:
-                # philhealth = 4% of rate; SSS = 4.5% of rate
-                philhealth = e.rate * 0.04
+                pagibig = 0
+                health = e.rate * 0.04
                 sss = e.rate * 0.045
-                tax = (base + allowance + overtime - philhealth - sss) * 0.2
-                total_pay = (base + allowance + overtime - philhealth - sss) - tax
+                tax = (base + allowance + overtime - health - sss) * 0.2
+                total_pay = (base + allowance + overtime - health - sss) - tax
 
-        Payslip.objects.create(
-            employee=e,
-            month=month,
-            year=year,
-            cycle=cycle,
-            date_range=date_range,
-            total_pay=round(total_pay, 2),
-        )
+            Payslip.objects.create(
+                employee_id_number=e,
+                month=month,
+                year=year,
+                pay_cycle=cycle,
+                date_range=date_range,
+                rate=e.rate,
+                earnings_allowance=allowance,
+                overtime=overtime,
+                deductions_tax=round(tax, 2),
+                deductions_health=round(health, 2),
+                pag_ibig=pagibig,
+                sss=round(sss, 2),
+                total_pay=round(total_pay, 2),
+            )
 
-        # reset overtime to 0
-        e.overtime = 0
-        e.save()
+            e.overtime_pay = 0
+            e.save()
 
-        return redirect('create_payroll')
-
-    return render(request, 'payroll_app/create_payroll.html', {
-        'employees': employees,
-        'payslips': payslips,
-    })
+        return redirect('payslips')
+    
+def view_payslip(request, pk):
+    payslip = get_object_or_404(Payslip, pk=pk)
+    return render(request, 'payroll_app/view_payslip.html', {'payslip': payslip})

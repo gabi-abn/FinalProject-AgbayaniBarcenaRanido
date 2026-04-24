@@ -3,13 +3,11 @@
 
 {% block content %}
 
-<div class="form-card">
-
   <!-- general payslip details section -->
   <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
     <div>
-      <p><strong>NAME:</strong> {{ payslip.employee.name }}</p>
-      <p><strong>ID NUMBER:</strong> {{ payslip.employee.id_number }}</p>
+      <p><strong>NAME:</strong> {{ payslip.employee_id_number.name }}</p>
+      <p><strong>ID NUMBER:</strong> {{ payslip.employee_id_number.id_number }}</p>
     </div>
     <div style="text-align:right;">
       <p><strong>DATE:</strong> {{ payslip.date_range }}</p>
@@ -33,11 +31,11 @@
       <tbody>
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">Base Pay</td>
-          <td style="text-align:right;">{{ payslip.base_pay }}</td>
+          <td style="text-align:right;">{{ payslip.rate|floatformat }}</td>
         </tr>
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">Allowances</td>
-          <td style="text-align:right;">{{ payslip.allowances }}</td>
+          <td style="text-align:right;">{{ payslip.earnings_allowance }}</td>
         </tr>
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">Overtime</td>
@@ -48,7 +46,7 @@
 
     <div style="display:flex; justify-content:space-between; margin-top:.75rem; font-weight:600; border-top:1px solid #e2e8f0; padding-top:.5rem;">
       <span>GROSS PAY</span>
-      <span>PHP {{ payslip.gross_pay }}</span>
+      <span>PHP {{ payslip.rate|add:payslip.earnings_allowance }}</span>
     </div>
   </div>
 
@@ -62,18 +60,18 @@
       <tbody>
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">W/HOLDING TAX</td>
-          <td style="text-align:right;">{{ payslip.tax }}</td>
+          <td style="text-align:right;">{{ payslip.deductions_tax }}</td>
         </tr>
 
-        {% if payslip.cycle == 1 %}
+        {% if payslip.pay_cycle == 1 %}
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">PAG-IBIG</td>
-          <td style="text-align:right;">{{ payslip.pagibig }}</td>
+          <td style="text-align:right;">{{ payslip.pag_ibig }}</td>
         </tr>
         {% else %}
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">PHILHEALTH</td>
-          <td style="text-align:right;">{{ payslip.philhealth }}</td>
+          <td style="text-align:right;">{{ payslip.deductions_health }}</td>
         </tr>
         <tr>
           <td style="padding:.25rem 0 .25rem 1.5rem;">SSS</td>
@@ -85,7 +83,7 @@
 
     <div style="display:flex; justify-content:space-between; margin-top:.75rem; font-weight:600; border-top:1px solid #e2e8f0; padding-top:.5rem;">
       <span>TOTAL DEDUCTIONS</span>
-      <span>PHP {{ payslip.total_deductions }}</span>
+      <span>PHP {{ payslip.deductions_tax|add:payslip.pag_ibig|add:payslip.deductions_health|add:payslip.sss }}</span>
     </div>
   </div>
 
@@ -96,7 +94,5 @@
     <span>NET PAY:</span>
     <span>PHP {{ payslip.total_pay }}</span>
   </div>
-
-</div>
 
 {% endblock %}
