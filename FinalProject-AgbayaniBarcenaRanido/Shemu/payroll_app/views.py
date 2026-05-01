@@ -110,9 +110,17 @@ def create_payroll(request):
         year = int(request.POST.get('year'))
         cycle = int(request.POST.get('cycle'))
 
+        if not all([payroll_for, month, year, cycle]):
+            messages.error(request, "Please fill in all fields.")
+            return redirect('create_payroll')
+
+        month = int(month)
+        year = int(year)
+        cycle = int(cycle)
+
         # determine which employees to process
         if payroll_for == 'all':
-            targets = employees
+            targets = Employee.objects.all()
         else:
             targets = Employee.objects.filter(id=payroll_for)
 
@@ -170,3 +178,4 @@ def create_payroll(request):
 def view_payslip(request, pk):
     payslip = get_object_or_404(Payslip, pk=pk)
     return render(request, 'payroll_app/view_payslip.html', {'payslip': payslip})
+

@@ -16,6 +16,7 @@
         <label for="id_payroll_for" style="white-space:nowrap; font-weight:500; color:#444;">Payroll for:</label>
         <select id="id_payroll_for" name="payroll_for" style="width:320px; border:1px solid #dde1e7; border-radius:8px; padding:.45rem .75rem; background-color:#fff; color:#444; outline:none;">
           <option value="">Choose...</option>
+          <option value="all">All Employees</option>
           {% for employee in employees %}
             <option value="{{ employee.id }}">{{ employee.id_number }}</option>
           {% endfor %}
