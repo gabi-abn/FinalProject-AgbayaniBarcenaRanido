@@ -106,17 +106,20 @@ def create_payroll(request):
 
     if request.method == 'POST':
         payroll_for = request.POST.get('payroll_for')
-        month = int(request.POST.get('month'))
-        year = int(request.POST.get('year'))
-        cycle = int(request.POST.get('cycle'))
+        month_str = request.POST.get('month')
+        year_str = request.POST.get('year')
+        cycle_str = request.POST.get('cycle')
 
-        if not all([payroll_for, month, year, cycle]):
+        if not all([payroll_for, month_str, year_str, cycle_str]):
             messages.error(request, "Please fill in all fields.")
-            return redirect('create_payroll')
+            return render(request, 'payroll_app/payslips.html', {
+                'employees': employees,
+                'payslips': payslips,
+            })
 
-        month = int(month)
-        year = int(year)
-        cycle = int(cycle)
+        month = int(month_str)
+        year = int(year_str)
+        cycle = int(cycle_str)
 
         # determine which employees to process
         if payroll_for == 'all':
