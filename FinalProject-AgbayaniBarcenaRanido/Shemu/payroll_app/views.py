@@ -85,21 +85,6 @@ def payslips(request):
     }
     return render(request, 'payroll_app/payslips.html', context)
 
-def update_employee(request, pk):
-    employee = get_object_or_404(Employee, pk=pk)
-    
-    if request.method == 'POST':
-        employee.name = request.POST.get('name')
-        employee.id_number = request.POST.get('id_number')
-        employee.position = request.POST.get('position')
-        employee.rate = request.POST.get('rate')
-        employee.allowance = request.POST.get('allowance') or 0
-        employee.save()
-        messages.success(request, f'Employee "{employee.name}" updated successfully.')
-        return redirect('employees')
-    
-    return render(request, 'payroll_app/update_employee.html', {'employee': employee})
-
 def create_payroll(request):
     employees = Employee.objects.all()
     payslips = Payslip.objects.all().order_by('-id')
@@ -176,9 +161,14 @@ def create_payroll(request):
             e.overtime_pay = 0
             e.save()
 
-        return redirect('payslips')
-    
+        return render(request, 'payroll_app/payslips.html', {
+            'employees': employees, 'payslips': payslips,
+        })
+            
 def view_payslip(request, pk):
     payslip = get_object_or_404(Payslip, pk=pk)
-    return render(request, 'payroll_app/view_payslip.html', {'payslip': payslip})
-
+    gross_pay = (payslip.rate / 2) + payslip.earnings_allowance + payslip.overtime
+    return render(request, 'payroll_app/view_payslip.html', {
+        'payslip': payslip,
+        'gross_pay': gross_pay,
+    })
