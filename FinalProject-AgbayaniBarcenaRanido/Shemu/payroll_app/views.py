@@ -15,41 +15,52 @@ def employees(request):
 
 def create_employee(request):
     if request.method == 'POST':
-        form = EmployeeForm(request.POST) #EmployeeForm from forms.py; fills the form with submitted data
-        if form.is_valid():
-            try:
-                employee = form.save(commit=False) #creates Employee object but not save to DB yet
-                employee.allowance = employee.allowance or 0 #if allowance is empty/None, default it to 0
-                employee.overtime_pay = 0 #new employees always start with 0 overtime
-                employee.save() #now save the Employee object to the database
-                messages.success(request, f'Employee "{employee.name}" created successfully.') #shows a success message on the next page
-                return redirect('employees')
-            except IntegrityError: #catches a DB error if the id_number already exists
+        try:
+            name = request.POST.get('name')
+            id_number = request.POST.get('id_number')
+            rate = float(request.POST.get('rate'))
+            allowance_raw = request.POST.get('allowance')
+            allowance = float(allowance_raw) if allowance_raw else 0
+
+            if not name or not id_number or not rate:
+                messages.error(request, 'Please fill in all required fields.')
+                return render(request, 'payroll_app/create_employee.html')
+
+            if Employee.objects.filter(id_number=id_number).exists():
                 messages.error(request, 'An employee with that ID number already exists.')
-    else:
-        form = EmployeeForm() #if it's a GET request, show a blank empty form
-    return render(request, 'payroll_app/create_employee.html', {'form': form})
+                return render(request, 'payroll_app/create_employee.html')
+
+            Employee.objects.create(
+                name=name,
+                id_number=id_number,
+                rate=rate,
+                allowance=allowance,
+                overtime_pay=0,
+            )
+            messages.success(request, f'Employee "{name}" created successfully.')
+            return redirect('employees')
+        except (ValueError, TypeError):
+            messages.error(request, 'Please enter valid values for all fields.')
+            return render(request, 'payroll_app/create_employee.html')
+    
+    return render(request, 'payroll_app/create_employee.html')
 
 
 def update_employee(request, pk):
-    employee = get_object_or_404(Employee, pk=pk) #fetch the Employee with the given pk from DB, return 404 if not found
+    employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':
-        form = EmployeeForm(request.POST, instance=employee) #fills the form with submitted data, tied to the existing employee record
-        if form.is_valid(): #validates submitted data based on rules in forms.py
-            try:
-                updated = form.save(commit=False) #creates updated Employee object but does not save to DB yet
-                updated.id_number = employee.id_number
-                updated.allowance = updated.allowance or 0 #if allowance is empty/None, default to 0
-                updated.save() #now save the updated Employee object to DB
-                messages.success(request, f'Employee "{updated.name}" updated successfully.') #shows success message on next page
-                return redirect('employees')
-            except IntegrityError: #catches DB error
-                messages.error(request, 'An employee with that ID number already exists.')
-        else:
+        try:
+            employee.name = request.POST.get('name')
+            employee.rate = float(request.POST.get('rate'))
+            allowance = request.POST.get('allowance')
+            employee.allowance = float(allowance) if allowance else 0
+            # id_number is NOT updated since it's disabled
+            employee.save()
+            messages.success(request, f'Employee "{employee.name}" updated successfully.')
+            return redirect('employees')
+        except (ValueError, TypeError):
             messages.error(request, 'Please fill in all required fields correctly.')
-    else:
-        form = EmployeeForm(instance=employee) #if GET request, pre-fill the form with existing Employee details
-    return render(request, 'payroll_app/update_employee.html', {'form': form, 'employee': employee})
+    return render(request, 'payroll_app/update_employee.html', {'employee': employee})
 
 
 def delete_employee(request, pk):
