@@ -18,7 +18,7 @@ class EmployeeForm(forms.ModelForm):
         }
         widgets = {
             'name'      : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full name'}),
-            'id_number' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Employee ID'}),
+            'id_number' : forms.TextInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
             'rate'      : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}),
             'allowance' : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00 (optional)', 'step': '0.01', 'min': '0'}),
         }

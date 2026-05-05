@@ -38,6 +38,7 @@ def update_employee(request, pk):
         if form.is_valid(): #validates submitted data based on rules in forms.py
             try:
                 updated = form.save(commit=False) #creates updated Employee object but does not save to DB yet
+                updated.id_number = employee.id_number
                 updated.allowance = updated.allowance or 0 #if allowance is empty/None, default to 0
                 updated.save() #now save the updated Employee object to DB
                 messages.success(request, f'Employee "{updated.name}" updated successfully.') #shows success message on next page
