@@ -11,7 +11,7 @@
     <form method="post" action="{% url 'create_payroll' %}">
       {% csrf_token %}
 
-      <!-- Row 1: Payroll for -->
+      <!-- payroll for row -->
       <div style="display:flex; justify-content:center; align-items:center; gap:1rem; padding-bottom:1rem; border-bottom:1px solid #eef0f2; margin-bottom:1rem;">
         <label for="id_payroll_for" style="white-space:nowrap; font-weight:500; color:#444;">Payroll for:</label>
         <select id="id_payroll_for" name="payroll_for" style="width:320px; border:1px solid #dde1e7; border-radius:8px; padding:.45rem .75rem; background-color:#fff; color:#444; outline:none;">
@@ -23,7 +23,7 @@
         </select>
       </div>
 
-      <!-- Row 2: Month / Year / Cycle -->
+      <!-- date row -->
       <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:1rem;">
         <label for="id_month" style="white-space:nowrap; color:#444;">Month:</label>
         <select id="id_month" name="month" style="width:160px; border:1px solid #dde1e7; border-radius:8px; padding:.45rem .75rem; background-color:#fff; color:#444; outline:none;">
@@ -53,7 +53,7 @@
         </select>
       </div>
 
-      <!-- Row 3: Submit centered -->
+      <!-- submit row -->
       <div style="display:flex; justify-content:center;">
         <button type="submit" class="btn-shemu-primary">Submit</button>
       </div>
