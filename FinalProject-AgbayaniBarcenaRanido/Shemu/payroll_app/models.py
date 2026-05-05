@@ -1,7 +1,7 @@
 from django.db import models
 
 class Employee(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     id_number = models.CharField(max_length=50, unique=True)
     rate = models.FloatField()
     overtime_pay = models.FloatField(null=True, blank=True)

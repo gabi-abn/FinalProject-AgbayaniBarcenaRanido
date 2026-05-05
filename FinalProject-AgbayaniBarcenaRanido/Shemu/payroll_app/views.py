@@ -44,6 +44,8 @@ def update_employee(request, pk):
                 return redirect('employees')
             except IntegrityError: #catches DB error
                 messages.error(request, 'An employee with that ID number already exists.')
+        else:
+            messages.error(request, 'Please fill in all required fields correctly.')
     else:
         form = EmployeeForm(instance=employee) #if GET request, pre-fill the form with existing Employee details
     return render(request, 'payroll_app/update_employee.html', {'form': form, 'employee': employee})

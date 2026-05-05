@@ -32,9 +32,18 @@
           
           <div style="display:flex; gap:.4rem; flex-wrap:wrap;">
             <a href="{% url 'update_employee' emp.pk %}" class="btn-shemu-primary">Update</a>
-            <a href="{% url 'delete_employee' emp.pk %}" class="btn-shemu-danger">Delete</a>
-          </div>
+            <button class="btn-shemu-danger" popovertarget="confirm-{{ emp.pk }}">Delete</button>
 
+            <dialog id="confirm-{{ emp.pk }}" popover style="border:1px solid black; border-radius:8px; padding:1.5rem; min-width:500px; min-height:100px;">
+              <p style="margin-bottom:1rem;">Delete <strong>{{ emp.getName }}</strong>? This cannot be undone.</p>
+              <div style="display:flex; gap:.75rem; margin-top:2rem;">
+                <a href="{% url 'delete_employee' emp.pk %}" class="btn-shemu-danger">Yes, Delete</a>
+                <form method="dialog">
+                  <button class="btn-shemu-secondary">Cancel</button>
+                </form>
+              </div>
+            </dialog>
+    </div>
           <form method="post" action="{% url 'add_overtime' emp.pk %}" class="overtime-row">
             {% csrf_token %}
             <input

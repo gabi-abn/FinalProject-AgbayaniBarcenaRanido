@@ -26,3 +26,7 @@ class EmployeeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['allowance'].required = False
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name', '')
+        return name.strip().title()
