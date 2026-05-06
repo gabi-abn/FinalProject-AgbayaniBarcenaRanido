@@ -1,0 +1,117 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %} – View Payslip{% endblock %}
+
+{% block content %}
+
+  <!-- general payslip details section -->
+  <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
+    <div>
+      <p>NAME: {{ payslip.employee_id_number.name }}</p>
+      <p>ID NUMBER: {{ payslip.employee_id_number.id_number }}</p>
+    </div>
+    <div style="text-align:right;">
+      <p>DATE: {{ payslip.date_range }}</p>
+      <p>PAYSLIP ID: {{ payslip.id }}</p>
+    </div>
+  </div>
+
+  <!-- earnings section -->
+  <div style="margin-top:1.25rem;">
+    <table style="width:100%; border-collapse:collapse; font-size:1rem; font-family:inherit;">
+      <thead>
+        <tr>
+          <th style="width:50%; text-align:left; font-weight:700; padding:.4rem 0;">EARNINGS:</th>
+          <th style="width:25%; text-align:left; font-weight:400; padding:.4rem 0;"></th>
+          <th style="width:25%; text-align:right; font-weight:700; padding:.4rem 0;">AMOUNT</th>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Base Pay</td>
+          <td style="text-align:left;">{{ payslip.getCycleRate }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Allowances</td>
+          <td style="text-align:left;">{{ payslip.earnings_allowance }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">Overtime</td>
+          <td style="text-align:left;">{{ payslip.overtime }}</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-top:2px solid #e2e8f0;">
+          <td style="padding:.25rem 0 .25rem 1.5rem;">GROSS PAY</td>
+          <td></td>
+          <td style="text-align:right; padding:.5rem 0; font-weight:700;">PHP {{ gross_pay }} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr style="margin-top:.5rem;">
+
+  <!-- deductions section -->
+  <div style="margin-top:1.25rem;">
+    <table style="width:100%; border-collapse:collapse; font-size:1rem; font-family:inherit;">
+      <thead>
+        <tr>
+          <th style="width:50%; text-align:left; font-weight:700; padding:.4rem 0;">DEDUCTIONS:</th>
+          <th style="width:25%; text-align:left; font-weight:400; padding:.4rem 0;"></th>
+          <th style="width:25%; text-align:right; font-weight:700; padding:.4rem 0;"></th>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">W/HOLDING TAX</td>
+          <td style="text-align:left;">{{ payslip.deductions_tax }}</td>
+          <td></td>
+        </tr>
+
+        {% if payslip.pay_cycle == 1 %}
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">PAG-IBIG</td>
+          <td style="text-align:left;">{{ payslip.pag_ibig }}</td>
+          <td></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">PHILHEALTH</td>
+          <td style="text-align:left;">{{ payslip.deductions_health }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="padding:.25rem 0 .25rem 1.5rem;">SSS</td>
+          <td style="text-align:left;">{{ payslip.sss }}</td>
+          <td></td>
+        </tr>
+        {% endif %}
+
+      </thead>
+      <tbody>
+        <tr style="border-top:2px solid #e2e8f0;">
+          <td style="padding:.25rem 0 .25rem 1.5rem;">TOTAL DEDUCTIONS</td>
+          <td></td>
+          <td style="text-align:right; padding:.5rem 0; font-weight:700;">PHP {{ payslip.deductions_tax|add:payslip.pag_ibig|add:payslip.deductions_health|add:payslip.sss }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr style="margin-top:.5rem;">
+
+  <!-- net pay section -->
+  <div style="display:flex; justify-content:space-between; margin-top:1.25rem; font-size:1.25rem; font-weight:700;">
+    <span>NET PAY:</span>
+    <span>PHP {{ payslip.total_pay }}</span>
+  </div>
+
+<div style="display:flex; justify-content:center; margin-top:2rem;">
+  <form method="POST" action="{% url 'payslips' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn-shemu-secondary" style="font-size:0.90rem; padding:0.50rem 2rem;">
+      Back
+    </button>
+  </form>
+</div>
+
+{% endblock %}  
