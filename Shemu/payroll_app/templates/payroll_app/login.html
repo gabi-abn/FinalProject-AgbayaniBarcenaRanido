@@ -1,0 +1,46 @@
+{% extends 'payroll_app/base.html' %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <h2>Login</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" name="username" required>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" required>
+    </div>
+
+    <div class="form-group">
+      <label>Admin Key (optional)</label>
+      <input type="text" name="admin_key">
+    </div>
+
+    <button class="btn-shemu-primary">Login</button>
+  </form>
+</div>
+{% endblock %}
+
+<nav class="top-nav">
+  <a href="{% url 'employees' %}" class="brand">Shemu</a>
+
+  {% if request.session.role == 'admin' %}
+    <a href="{% url 'employees' %}">Employees</a>
+    <a href="{% url 'payslips' %}">Payslips</a>
+  {% elif request.session.role == 'employee' %}
+    <a href="{% url 'payslips' %}">My Payslips</a>
+  {% endif %}
+
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a>
+  {% endif %}
+</nav>
