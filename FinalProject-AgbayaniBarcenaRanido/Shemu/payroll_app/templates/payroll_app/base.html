@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shemu Payroll{% block title %}{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-nav {
+      background: #444;
+      padding: 0 1.5rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .top-nav .brand {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+    .top-nav a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: .9rem;
+    }
+    .top-nav a:hover { color: #fff; }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .page-heading h1 {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .shemu-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    .shemu-table thead tr {
+      background: #333;
+      color: #fff;
+    }
+    .shemu-table thead th {
+      padding: .65rem 1rem;
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .shemu-table tbody tr {
+      border-bottom: 1px solid #ddd;
+    }
+    .shemu-table tbody tr:hover { background: #fafafa; }
+    .shemu-table tbody td {
+      padding: .65rem 1rem;
+      font-size: .9rem;
+      vertical-align: middle;
+    }
+
+    .btn-shemu-primary {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: .45rem 1.1rem;
+      border-radius: 7px;
+      font-size: .85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .btn-shemu-primary:hover { background: #2563eb; color: #fff; }
+ 
+    .btn-shemu-danger {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: .4rem .9rem;
+      border-radius: 7px;
+      font-size: .82rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-shemu-danger:hover { background: #dc2626; color: #fff; }
+ 
+    .btn-shemu-success {
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      padding: .4rem .9rem;
+      border-radius: 7px;
+      font-size: .82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-shemu-success:hover { background: #16a34a; }
+ 
+    .btn-shemu-secondary {
+      background: #64748b;
+      color: #fff;
+      border: none;
+      padding: .4rem .9rem;
+      border-radius: 7px;
+      font-size: .82rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-shemu-secondary:hover { background: #475569; color: #fff; }
+
+    .overtime-row {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: .4rem;
+    }
+    .overtime-row input[type="number"] {
+      width: 110px;
+      flex-grow: 1;
+      padding: .3rem .5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: .82rem;
+    }
+
+    .form-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 2rem;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .form-card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: .3rem;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: .45rem .7rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: .9rem;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    .form-error {
+      color: #dc3545;
+      font-size: .8rem;
+      margin-top: .2rem;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: .6rem 1rem;
+      border-radius: 4px;
+      margin-bottom: .75rem;
+      font-size: .875rem;
+    }
+    .alert-error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      padding: .6rem 1rem;
+      border-radius: 4px;
+      margin-bottom: .75rem;
+      font-size: .875rem;
+    }
+
+    .bottom-footer {
+      background: #444;
+      text-align: center;
+      padding: .7rem;
+      font-size: .8rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="{% url 'employees' %}" class="brand">Shemu</a>
+    <a href="{% url 'employees' %}">Employees</a>
+    <a href="{% url 'payslips' %}">Payslips</a>
+  </nav>
+
+  <div class="main-content">
+
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          <div class="alert-success">{{ message }}</div>
+        {% else %}
+          <div class="alert-error">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+  </div>
+
+  <footer class="bottom-footer">
+    &copy; 2026 Shemu Payroll System
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
